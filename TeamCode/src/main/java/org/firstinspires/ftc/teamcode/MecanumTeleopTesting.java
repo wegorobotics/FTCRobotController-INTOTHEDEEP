@@ -13,6 +13,7 @@ public class MecanumTeleopTesting extends OpMode {
     DcMotor bl_Wheel;
     DcMotor fr_Wheel;
     DcMotor br_Wheel;
+    DcMotor arm_motor;
 
 
     @Override
@@ -23,6 +24,7 @@ public class MecanumTeleopTesting extends OpMode {
         bl_Wheel = hardwareMap.get(DcMotor.class, "bl_motor");
         fr_Wheel = hardwareMap.get(DcMotor.class, "fr_motor");
         br_Wheel = hardwareMap.get(DcMotor.class, "br_motor");
+        arm_motor = hardwareMap.get(DcMotor.class, "arm_motor");
 
 
         fr_Wheel.setDirection(DcMotor.Direction.REVERSE);
@@ -35,6 +37,7 @@ public class MecanumTeleopTesting extends OpMode {
         fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 
@@ -45,14 +48,20 @@ public class MecanumTeleopTesting extends OpMode {
         double bl_Position = bl_Wheel.getCurrentPosition();
         double fr_Position = fr_Wheel.getCurrentPosition();
         double br_Position = br_Wheel.getCurrentPosition();
+        double arm_Position = arm_motor.getCurrentPosition();
 
         telemetry.addData("Front Left Wheel Pos", fl_Position);
         telemetry.addData("Back Left Wheel Pos", bl_Position);
         telemetry.addData("Front Right Wheel Pos", fr_Position);
         telemetry.addData("Back Right Wheel Pos", br_Position);
+        telemetry.addData("Arm Motor Pos", arm_Position);
         telemetry.update();
 
-        // movement
+        // arm motor movement :)
+        double arm_speed = gamepad1.right_trigger - gamepad1.left_trigger;
+        arm_motor.setPower(arm_speed);
+
+        // wheel movement
         double y = gamepad1.right_stick_y;
         double x = gamepad1.right_stick_x;
         double rx = gamepad1.left_stick_x; // rotation
@@ -65,10 +74,12 @@ public class MecanumTeleopTesting extends OpMode {
         double backRightPower = (y + x - rx) / denominator;
 
 
+
         fr_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         boolean rightstrafe = gamepad1.right_bumper;
@@ -77,16 +88,16 @@ public class MecanumTeleopTesting extends OpMode {
 
         if (rightstrafe) {
             fl_Wheel.setPower(0.5);
-            fr_Wheel.setPower(-0.5);
+            fr_Wheel.setPower(0.5);
             bl_Wheel.setPower(-0.5);
-            br_Wheel.setPower(0.5);
+            br_Wheel.setPower(-0.5);
 
 
         } else if (leftstrafe) {
             fl_Wheel.setPower(-0.5);
-            fr_Wheel.setPower(0.5);
+            fr_Wheel.setPower(-0.5);
             bl_Wheel.setPower(0.5);
-            br_Wheel.setPower(-0.5);
+            br_Wheel.setPower(0.5);
         } else {
             fl_Wheel.setPower(frontLeftPower);
             bl_Wheel.setPower(backLeftPower);
@@ -100,6 +111,7 @@ public class MecanumTeleopTesting extends OpMode {
             fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         }
     }
