@@ -8,16 +8,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 
-
-@TeleOp (name= "MecanumTeleop")
+@TeleOp (name= "MecanumTeleopArm")
 //@Disabled
-public class MecanumTeleop extends OpMode {
+public class MecanumTeleopArm extends OpMode {
     // motors
     DcMotor fl_Wheel;
     DcMotor bl_Wheel;
     DcMotor fr_Wheel;
     DcMotor br_Wheel;
-    DcMotor arm_motor;
+    DcMotor arm_motorLeft;
+    DcMotor arm_motorRight;
+
 
 
     //agtest change CRServo to Servo 11/14
@@ -33,7 +34,8 @@ public class MecanumTeleop extends OpMode {
         bl_Wheel = hardwareMap.get(DcMotor.class, "bl_motor");
         fr_Wheel = hardwareMap.get(DcMotor.class, "fr_motor");
         br_Wheel = hardwareMap.get(DcMotor.class, "br_motor");
-        arm_motor = hardwareMap.get(DcMotor.class, "arm_motor");
+        arm_motorLeft = hardwareMap.get(DcMotor.class, "arm_motorLeft");
+        arm_motorRight = hardwareMap.get(DcMotor.class, "arm_motorRight");
         wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
         claw_servo = hardwareMap.get(CRServo.class, "claw_servo");
 
@@ -42,13 +44,16 @@ public class MecanumTeleop extends OpMode {
         fl_Wheel.setDirection(DcMotor.Direction.FORWARD);
         br_Wheel.setDirection(DcMotor.Direction.REVERSE);
         bl_Wheel.setDirection(DcMotor.Direction.FORWARD);
+        arm_motorLeft.setDirection(DcMotor.Direction.FORWARD);
+        arm_motorRight.setDirection(DcMotor.Direction.REVERSE);
 
 
         fr_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         //wrist_servo.resetDeviceConfigurationForOpMode(); //AG testing 11/14 - can delete
@@ -62,18 +67,20 @@ public class MecanumTeleop extends OpMode {
         double bl_Position = bl_Wheel.getCurrentPosition();
         double fr_Position = fr_Wheel.getCurrentPosition();
         double br_Position = br_Wheel.getCurrentPosition();
-        double arm_Position = arm_motor.getCurrentPosition();
+        double larm_Position = arm_motorLeft.getCurrentPosition();
+        double rarm_Position = arm_motorRight.getCurrentPosition();
         double wrist_Position = wrist_servo.getPosition(); // agtest 11/14
 
 
-        final double wrist_Speed = .01; // agtest 11/14
+        final double wrist_Speed = .02; // agtest 11/14
 
 
         telemetry.addData("Front Left Wheel Pos", fl_Position);
         telemetry.addData("Back Left Wheel Pos", bl_Position);
         telemetry.addData("Front Right Wheel Pos", fr_Position);
         telemetry.addData("Back Right Wheel Pos", br_Position);
-        telemetry.addData("Arm Motor Pos", arm_Position);
+        telemetry.addData("Left Arm Motor Pos", larm_Position);
+        telemetry.addData("Right Arm Motor Pos", rarm_Position);
         telemetry.addData("Wrist Servo Pos", wrist_Position);
         telemetry.update();
 
@@ -152,8 +159,9 @@ public class MecanumTeleop extends OpMode {
 
 
             // arm motor movement :)
-            double arm_speed = gamepad1.left_trigger - gamepad1.right_trigger;
-            arm_motor.setPower(arm_speed);
+            double arm_speed = gamepad1.right_trigger - gamepad1.left_trigger;
+            arm_motorLeft.setPower(arm_speed);
+            arm_motorRight.setPower(arm_speed);
 
 
             // wheel movement
@@ -173,7 +181,8 @@ public class MecanumTeleop extends OpMode {
             fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            arm_motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            arm_motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
             boolean leftstrafe = gamepad1.right_bumper;
@@ -205,7 +214,8 @@ public class MecanumTeleop extends OpMode {
                 fl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 br_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 bl_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                arm_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm_motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm_motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
             }
